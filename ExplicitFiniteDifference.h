@@ -24,7 +24,7 @@ public:
      **************************************************************************/
     virtual void doBackward(
         boost::numeric::ublas::vector<double>& rightHandSide,
-        boost::numeric::ublas::vector<double>& result);
+        boost::numeric::ublas::vector<double>& results) const;
 private:
     const double _upperValue;
     const double _middleValue;

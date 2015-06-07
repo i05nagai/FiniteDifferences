@@ -4,11 +4,11 @@
 
 #include <iostream>
 
-class CalculatorExplicit
+class CalculatorCrankNicolson
     : public Calculator
 {
 public:
-    CalculatorExplicit(
+    CalculatorCrankNicolson(
         const double strike,
         const double maturity,
         const double volatility,
@@ -16,7 +16,7 @@ public:
         const double dividend,
         const std::size_t numberOfTimeSteps,
         const double spaceStepSize);
-    virtual ~CalculatorExplicit();
+    virtual ~CalculatorCrankNicolson();
 
     virtual double calculateUpperValue() const;
     virtual double calculateMiddleValue() const;

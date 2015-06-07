@@ -20,7 +20,8 @@ public:
         const boost::numeric::ublas::vector<double>& rightHandSide) const = 0;
     virtual double lowerCondition( 
         const boost::numeric::ublas::vector<double>& rightHandSide) const = 0;
-    virtual void operatorCondition(TridiagonalOperator& tridiagonalOperator);
+    virtual void operatorCondition(
+        TridiagonalOperator& tridiagonalOperator) const;
 
 private:
             

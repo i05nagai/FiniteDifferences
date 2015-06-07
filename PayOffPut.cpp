@@ -12,5 +12,5 @@ PayOffPut::~PayOffPut()
 
 double PayOffPut::operator()(const double spot) const
 {
-    return std::max(0.0, spot - _strike);
+    return std::max(0.0, _strike - spot);
 }

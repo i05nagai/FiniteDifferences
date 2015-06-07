@@ -2,22 +2,21 @@
 
 class Calculator 
 {
-    public:
-        Calculator();
-        virtual ~Calculator();
+public:
+    /**************************************************************************
+     * Constructers and Destructers.
+     **************************************************************************/
+    Calculator();
+    virtual ~Calculator();
 
-        virtual double calculateUpValue() = 0;
-        virtual double calculateMiddleValue() = 0;
-        virtual double calculateDownValue() = 0;
-        
-    private:
+    /**************************************************************************
+     * pure virtual functions.
+     **************************************************************************/
+    virtual double calculateUpperValue() const = 0;
+    virtual double calculateMiddleValue() const = 0;
+    virtual double calculateLowerValue() const = 0;
+    
+private:
             
 };
 
-Calculator::Calculator() 
-{
-    
-}
-Calculator::~Calculator() 
-{
-}

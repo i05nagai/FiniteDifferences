@@ -1,5 +1,7 @@
 #include "CrankNicolson.h"
 
+#include <boost/numeric/ublas/io.hpp>
+
 /******************************************************************************
  * Constructers and Destructers.
  ******************************************************************************/
@@ -28,19 +30,22 @@ CrankNicolson::~CrankNicolson()
  ******************************************************************************/
 void CrankNicolson::doBackward(
     boost::numeric::ublas::vector<double>& rightHandSide,
-    boost::numeric::ublas::vector<double>& results)
+    boost::numeric::ublas::vector<double>& results) const
 {
+    boost::numeric::ublas::vector<double> workingCopy(rightHandSide);
+
     //berfore solve
-    const std::size_t lastIndex = rightHandSide.size() - 1;
+    for (std::size_t rowIndex = 1; rowIndex < rightHandSide.size() - 1; ++rowIndex) {
+        rightHandSide[rowIndex] = 
+            - workingCopy[rowIndex + 1] * _lowerValue 
+            - workingCopy[rowIndex] * (_middleValue - 2.0)
+            - workingCopy[rowIndex - 1] * _upperValue;
+    }
+    const std::size_t lastIndex = workingCopy.size() - 1;
     rightHandSide[lastIndex] = _boundaryCondtion->upperCondition(rightHandSide);
     rightHandSide[0] = _boundaryCondtion->lowerCondition(rightHandSide);
+    std::cout << "afterBdd:" << rightHandSide << std::endl;
     
-    for (std::size_t rowIndex = 1; rowIndex < rightHandSide.size() - 1; ++rowIndex) {
-        results[rowIndex] = 
-            - rightHandSide[rowIndex + 1] * _lowerValue 
-            - rightHandSide[rowIndex] * (_middleValue - 2.0)
-            - rightHandSide[rowIndex - 1] * _upperValue;
-    }
 
     //solve
     _tridiagonalOperator.solve(rightHandSide, results);

@@ -15,6 +15,6 @@ StepConditionNull::~StepConditionNull()
  * inherited pure virtual functions.
  ******************************************************************************/
 void StepConditionNull::applyAfterBackward(
-    boost::numeric::ublas::vector<double>& previousStep)
+    boost::numeric::ublas::vector<double>& previousStep) const
 {
 }

@@ -26,7 +26,6 @@ double BoundaryConditionPut::upperCondition(
 double BoundaryConditionPut::lowerCondition(
     const boost::numeric::ublas::vector<double>& rightHandSide) const
 {
-    const std::size_t lastIndex = _stocks.size() - 1;
-    return - _stocks[lastIndex - 1] + _stocks[lastIndex];
+    return - _stocks[1] + _stocks[0];
 }
 

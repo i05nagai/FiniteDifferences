@@ -1,35 +1,43 @@
+#include "PayOffCall.h"
+#include "PayOffPut.h"
+#include "CalculatorExplicit.h"
+#include "CalculatorImplicit.h"
+#include "CalculatorCrankNicolson.h"
+#include "BoundaryConditionCall.h"
+#include "BoundaryConditionPut.h"
+#include "ExplicitFiniteDifference.h"
+#include "ImplicitFiniteDifference.h"
+#include "CrankNicolson.h"
+#include "FiniteDifference.h"
+#include "StepConditionNull.h"
+#include "StepConditionAmerican.h"
 
+#include <boost/shared_ptr.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/io.hpp>
+#include <iostream>
 
-void initializeRightHandSide(
-    boost::numeric::ublas::vector<double> rightHandSide,
-    const boost::shared_ptr<const PayOff>& payOff) const
+void initializeStocks(
+    boost::numeric::ublas::vector<double>& stocks,
+    const double spot,
+    const double spaceStepSize,
+    const std::size_t numberOfTimeSteps)
 {
-    for (std::size_t rowIndex = 0; rowIndex < rightHandSide.size(); ++rowIndex) {
-        rightHandSide[rowIndex] = payOff->operator()(rightHandSide[rowIndex]);
+    const std::size_t gridSize = 2 * numberOfTimeSteps + 1;
+    for (std::size_t rowIndex = 0; rowIndex < gridSize; ++rowIndex) {
+        stocks[rowIndex] = spot * exp(
+            static_cast<int>(rowIndex - numberOfTimeSteps) * spaceStepSize);
     }
 }
 
-inline double squared(const double x)
+void initializeRightHandSide(
+    boost::numeric::ublas::vector<double>& rightHandSide,
+    const boost::numeric::ublas::vector<double>& stocks,
+    const boost::shared_ptr<const PayOff>& payOff)
 {
-    return x * x;
-}
-
-inline double calculateUpValue()
-{
-    return 0.5 * timeStepSize 
-        * (squared(volatility / spaceStepSize) + drifit / spaceStepSize);
-}
-
-inline double calculateMiddleValue()
-{
-    return 1.0 - timeStepSize * squared(volatility / spaceStepSize)
-        - interestRate * timeStepSize;
-}
-
-inline double calculateDownValue()
-{
-    return 0.5 * timeStepSize 
-        * (squared(volatility / spaceStepSize) - drifit / spaceStepSize);
+    for (std::size_t rowIndex = 0; rowIndex < rightHandSide.size(); ++rowIndex) {
+        rightHandSide[rowIndex] = payOff->operator()(stocks[rowIndex]);
+    }
 }
 
 int main(int argc, char const* argv[])
@@ -47,42 +55,222 @@ int main(int argc, char const* argv[])
         const double spot = 100.0;
         const double volatility = 0.2;
         const double interestRate = 0.06;
-        const std::size_t numberOfTimeSteps = 3;;
+        const double dividend = 0.03;
+        const std::size_t numberOfTimeSteps = 3;
         const double spaceStepSize = 0.2;
 
         //precomputing variables
         const std::size_t gridSize = 2 * numberOfTimeSteps + 1;
-        const double drift = interestRate - dividend - 0.5 * squared(volatilit);
-        const double upValue = 
-            calculateUpValue(drift, volatility, timeStepSize, spaceStepSize);
-        const double middleValue = calculateMiddleValue(
-            interestRate, drift, volatility, timeStepSize, spaceStepSize);
-        const double downValue = 
-            calculateDownValue(drift, volatility, timeStepSize, spaceStepSize);
+        boost::numeric::ublas::vector<double> stocks(gridSize);
+        initializeStocks(stocks, spot, spaceStepSize, numberOfTimeSteps);
+        const CalculatorExplicit calculator(strike, maturity, volatility, 
+            interestRate, dividend, numberOfTimeSteps, spaceStepSize);
+        const double upperValue = calculator.calculateUpperValue();
+        const double middleValue = calculator.calculateMiddleValue();
+        const double lowerValue = calculator.calculateLowerValue();
 
         //payoff
         const boost::shared_ptr<const PayOff> payOff(new PayOffCall(strike));
 
         //initial value
-        const boost:::numeric::ublas::vector<double> rightHandSide(gridSize);
-        initializeRightHandSide(rightHandSide, payOff);
+        boost::numeric::ublas::vector<double> rightHandSide(gridSize);
+        initializeRightHandSide(rightHandSide, stocks, payOff);
 
         //boundary condition
        const boost::shared_ptr<const BoundaryCondition> boundaryConditionCall(
-           new BoundaryConditionCall());
+           new BoundaryConditionCall(stocks));
 
        //Finite difference scheme
        const boost::shared_ptr<const FiniteDifferenceScheme> scheme(
-           new ExplicitFiniteDifference(upValue, middleValue, downValue,
-                boundaryConditionPut));
+           new ExplicitFiniteDifference(upperValue, middleValue, lowerValue,
+                gridSize, boundaryConditionCall));
 
        //step condition
        const boost::shared_ptr<const StepCondition> stepCondition(
            new StepConditionNull());
 
+       //making finite difference
+       FiniteDifference finiteDifference(stocks, numberOfTimeSteps);
+
        //calculate price
-       FiniteDifferences finiteDifferences(scheme, stepCondition)
+       boost::numeric::ublas::vector<double> results = 
+           finiteDifference.doScheme(scheme, stepCondition, rightHandSide);
+
+       std::cout << "result" << results << std::endl;
+       std::cout << std::endl;
+    }
+
+    {
+        /**********************************************************************
+         * American Put Option by Explicit Finite Difference. Figure3.9.
+         **********************************************************************/
+        //parameters
+        const double strike = 100.0;
+        const double maturity = 1.0;
+        const double spot = 100.0;
+        const double volatility = 0.2;
+        const double interestRate = 0.06;
+        const double dividend = 0.03;
+        const std::size_t numberOfTimeSteps = 3;
+        const double spaceStepSize = 0.2;
+
+        //precomputing variables
+        const std::size_t gridSize = 2 * numberOfTimeSteps + 1;
+        boost::numeric::ublas::vector<double> stocks(gridSize);
+        initializeStocks(stocks, spot, spaceStepSize, numberOfTimeSteps);
+        const CalculatorExplicit calculator(strike, maturity, volatility, 
+            interestRate, dividend, numberOfTimeSteps, spaceStepSize);
+        const double upperValue = calculator.calculateUpperValue();
+        const double middleValue = calculator.calculateMiddleValue();
+        const double lowerValue = calculator.calculateLowerValue();
+
+        //payoff
+        const boost::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
+
+        //initial value
+        boost::numeric::ublas::vector<double> rightHandSide(gridSize);
+        initializeRightHandSide(rightHandSide, stocks, payOff);
+
+        //boundary condition
+       const boost::shared_ptr<const BoundaryCondition> boundaryCondition(
+           new BoundaryConditionPut(stocks));
+
+       //Finite difference scheme
+       const boost::shared_ptr<const FiniteDifferenceScheme> scheme(
+           new ExplicitFiniteDifference(upperValue, middleValue, lowerValue,
+                gridSize, boundaryCondition));
+
+       //step condition
+       const boost::shared_ptr<const StepCondition> stepCondition(
+           new StepConditionAmerican(stocks, payOff));
+
+       //making finite difference
+       FiniteDifference finiteDifference(stocks, numberOfTimeSteps);
+
+       //calculate price
+       boost::numeric::ublas::vector<double> results = 
+           finiteDifference.doScheme(
+               scheme, stepCondition, rightHandSide);
+
+       std::cout << "result" << results << std::endl;
+
+       std::cout << std::endl;
     }
     
+    {
+        /**********************************************************************
+         * American Put Option by Implicit Finite Difference. Figure3.13.
+         **********************************************************************/
+        //parameters
+        const double strike = 100.0;
+        const double maturity = 1.0;
+        const double spot = 100.0;
+        const double volatility = 0.2;
+        const double interestRate = 0.06;
+        const double dividend = 0.03;
+        const std::size_t numberOfTimeSteps = 3;
+        const double spaceStepSize = 0.2;
+
+        //precomputing variables
+        const std::size_t gridSize = 2 * numberOfTimeSteps + 1;
+        boost::numeric::ublas::vector<double> stocks(gridSize);
+        initializeStocks(stocks, spot, spaceStepSize, numberOfTimeSteps);
+        const CalculatorImplicit calculator(strike, maturity, volatility, 
+            interestRate, dividend, numberOfTimeSteps, spaceStepSize);
+        const double upperValue = calculator.calculateUpperValue();
+        const double middleValue = calculator.calculateMiddleValue();
+        const double lowerValue = calculator.calculateLowerValue();
+
+        //payoff
+        const boost::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
+
+        //initial value
+        boost::numeric::ublas::vector<double> rightHandSide(gridSize);
+        initializeRightHandSide(rightHandSide, stocks, payOff);
+
+        //boundary condition
+       const boost::shared_ptr<const BoundaryCondition> boundaryCondition(
+           new BoundaryConditionPut(stocks));
+
+       //Finite difference scheme
+       const boost::shared_ptr<const FiniteDifferenceScheme> scheme(
+           new ImplicitFiniteDifference(upperValue, middleValue, lowerValue,
+                gridSize, boundaryCondition));
+
+       //step condition
+       const boost::shared_ptr<const StepCondition> stepCondition(
+           new StepConditionAmerican(stocks, payOff));
+
+       //making finite difference
+       FiniteDifference finiteDifference(stocks, numberOfTimeSteps);
+
+       //calculate price
+       boost::numeric::ublas::vector<double> results = 
+           finiteDifference.doScheme(
+               scheme, stepCondition, rightHandSide);
+
+       std::cout << "result" << results << std::endl;
+       std::cout << std::endl;
+    }
+
+    {
+        /**********************************************************************
+         * American Put Option by Crank-Nicolson. Figure3.16.
+         **********************************************************************/
+        //parameters
+        const double strike = 100.0;
+        const double maturity = 1.0;
+        const double spot = 100.0;
+        const double volatility = 0.2;
+        const double interestRate = 0.06;
+        const double dividend = 0.03;
+        const std::size_t numberOfTimeSteps = 3;
+        const double spaceStepSize = 0.2;
+
+        //precomputing variables
+        const std::size_t gridSize = 2 * numberOfTimeSteps + 1;
+        boost::numeric::ublas::vector<double> stocks(gridSize);
+        initializeStocks(stocks, spot, spaceStepSize, numberOfTimeSteps);
+        const CalculatorCrankNicolson calculator(strike, maturity, volatility, 
+            interestRate, dividend, numberOfTimeSteps, spaceStepSize);
+        const double upperValue = calculator.calculateUpperValue();
+        const double middleValue = calculator.calculateMiddleValue();
+        const double lowerValue = calculator.calculateLowerValue();
+
+        std::cout << upperValue << std::endl;
+        std::cout << middleValue << std::endl;
+        std::cout << lowerValue << std::endl;
+
+
+        //payoff
+        const boost::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
+
+        //initial value
+        boost::numeric::ublas::vector<double> rightHandSide(gridSize);
+        initializeRightHandSide(rightHandSide, stocks, payOff);
+
+        //boundary condition
+       const boost::shared_ptr<const BoundaryCondition> boundaryCondition(
+           new BoundaryConditionPut(stocks));
+
+       //Finite difference scheme
+       const boost::shared_ptr<const FiniteDifferenceScheme> scheme(
+           new CrankNicolson(upperValue, middleValue, lowerValue,
+                gridSize, boundaryCondition));
+
+       //step condition
+       const boost::shared_ptr<const StepCondition> stepCondition(
+           new StepConditionAmerican(stocks, payOff));
+
+       //making finite difference
+       FiniteDifference finiteDifference(stocks, numberOfTimeSteps);
+
+       //calculate price
+       boost::numeric::ublas::vector<double> results = 
+           finiteDifference.doScheme(
+               scheme, stepCondition, rightHandSide);
+
+       std::cout << "result" << results << std::endl;
+    }
     return 0;
 }

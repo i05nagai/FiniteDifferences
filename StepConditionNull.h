@@ -9,14 +9,14 @@ public:
     /**************************************************************************
      * Constructers and Destructers.
      **************************************************************************/
-    StepConditionNull()
+    StepConditionNull();
     virtual ~StepConditionNull();
 
     /**************************************************************************
      * inherited pure virtual functions.
      **************************************************************************/
     virtual void applyAfterBackward(
-        boost::numeric::ublas::vector<double>& previousStep);
+        boost::numeric::ublas::vector<double>& previousStep) const;
 private:
 };
 

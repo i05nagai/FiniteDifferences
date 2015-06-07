@@ -1,5 +1,7 @@
 #pragma once
 
+#include <boost/numeric/ublas/vector.hpp>
+
 class StepCondition 
 {
 public:
@@ -13,7 +15,7 @@ public:
      * inherited pure virtual functions.
      **************************************************************************/
     virtual void applyAfterBackward(
-        boost::numeric::ublas::vector<double>& previousStep) = 0;
+        boost::numeric::ublas::vector<double>& previousStep) const = 0;
 
 private:
             

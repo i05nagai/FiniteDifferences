@@ -4,11 +4,11 @@
 
 #include <iostream>
 
-class CalculatorExplicit
+class CalculatorImplicit
     : public Calculator
 {
 public:
-    CalculatorExplicit(
+    CalculatorImplicit(
         const double strike,
         const double maturity,
         const double volatility,
@@ -16,7 +16,7 @@ public:
         const double dividend,
         const std::size_t numberOfTimeSteps,
         const double spaceStepSize);
-    virtual ~CalculatorExplicit();
+    virtual ~CalculatorImplicit();
 
     virtual double calculateUpperValue() const;
     virtual double calculateMiddleValue() const;

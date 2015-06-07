@@ -1,5 +1,7 @@
 #include "ExplicitFiniteDifference.h"
 
+#include <boost/numeric/ublas/io.hpp>
+
 /******************************************************************************
  * Constructers and Destructers.
  ******************************************************************************/
@@ -25,23 +27,24 @@ ExplicitFiniteDifference::~ExplicitFiniteDifference()
 /******************************************************************************
  * inherited pure virtual functions.
  ******************************************************************************/
-ExplicitFiniteDifference::doBackward(
+void ExplicitFiniteDifference::doBackward(
     boost::numeric::ublas::vector<double>& rightHandSide,
-    boost::numeric::ublas::vector<double>& results)
+    boost::numeric::ublas::vector<double>& results) const
 {
+    boost::numeric::ublas::vector<double> workingCopy(rightHandSide);
+
     //before solve
     for (std::size_t rowIndex = 1; rowIndex < rightHandSide.size() - 1; ++rowIndex) {
-        result[rowIndex] = rightHandSide[rowIndex + 1] * lowerValue 
-            + rightHandSide[rowIndex] * middleValue 
-            + rightHandSide[rowIndex - 1] * upperValue;
+        rightHandSide[rowIndex] = workingCopy[rowIndex + 1] * _lowerValue 
+            + workingCopy[rowIndex] * _middleValue 
+            + workingCopy[rowIndex - 1] * _upperValue;
     }
+    const double lastIndex = rightHandSide.size() - 1;
+    rightHandSide[lastIndex] = _boundaryCondition->upperCondition(rightHandSide);
+    rightHandSide[0] = _boundaryCondition->lowerCondition(rightHandSide);
 
     //solve
     _tridiagonalOperator.solve(rightHandSide, results);
 
-    //after solve
-    const double lastIndex = rightHandSide.size() - 1;
-    rightHandSide[lastIndex] = boundaryCondtiion->upperCondition();
-    rightHandSide[0] = boundaryCondition->lowerCondition();
 }
 
