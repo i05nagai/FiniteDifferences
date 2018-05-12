@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/i05nagai/FiniteDifferences.svg?branch=master)](https://travis-ci.org/i05nagai/FiniteDifferences)
+
 ## Overview
 Finite difference method for option pricing based on Implementing Derivative Models Les Clewlow, Chris Strickland.
 
