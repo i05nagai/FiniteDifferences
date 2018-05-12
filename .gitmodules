@@ -1,0 +1,72 @@
+[submodule "submodule/boost/numeric/ublas"]
+	path = submodule/boost/numeric/ublas
+	url = https://github.com/boostorg/ublas.git
+[submodule "submodule/boost/config"]
+	path = submodule/boost/config
+	url = https://github.com/boostorg/config.git
+[submodule "submodule/boost/serialization"]
+	path = submodule/boost/serialization
+	url = https://github.com/boostorg/serialization.git
+[submodule "submodule/boost/type_traits"]
+	path = submodule/boost/type_traits
+	url = https://github.com/boostorg/type_traits.git
+[submodule "submodule/boost/mpl"]
+	path = submodule/boost/mpl
+	url = https://github.com/boostorg/mpl.git
+[submodule "submodule/boost/preprocessor"]
+	path = submodule/boost/preprocessor
+	url = https://github.com/boostorg/preprocessor.git
+[submodule "submodule/boost/static_assert"]
+	path = submodule/boost/static_assert
+	url = https://github.com/boostorg/static_assert
+[submodule "submodule/boost/core"]
+	path = submodule/boost/core
+	url = https://github.com/boostorg/core
+[submodule "submodule/boost/math"]
+	path = submodule/boost/math
+	url = https://github.com/boostorg/math
+[submodule "submodule/boost/utility"]
+	path = submodule/boost/utility
+	url = https://github.com/boostorg/utility
+[submodule "submodule/boost/typeof"]
+	path = submodule/boost/typeof
+	url = https://github.com/boostorg/typeof
+[submodule "submodule/boost/throw_exception"]
+	path = submodule/boost/throw_exception
+	url = https://github.com/boostorg/throw_exception
+[submodule "submodule/boost/random"]
+	path = submodule/boost/random
+	url = https://github.com/boostorg/random
+[submodule "submodule/boost/range"]
+	path = submodule/boost/range
+	url = https://github.com/boostorg/range
+[submodule "submodule/boost/array"]
+	path = submodule/boost/array
+	url = https://github.com/boostorg/array
+[submodule "submodule/boost/assert"]
+	path = submodule/boost/assert
+	url = https://github.com/boostorg/assert
+[submodule "submodule/boost/concept_check"]
+	path = submodule/boost/concept_check
+	url = https://github.com/boostorg/concept_check
+[submodule "build/submodule/boost/core"]
+	path = build/submodule/boost/core
+	url = https://github.com/boostorg/core
+[submodule "build/submodule/boost/integer"]
+	path = build/submodule/boost/integer
+	url = https://github.com/boostorg/integer
+[submodule "build/submodule/boost/iterator"]
+	path = build/submodule/boost/iterator
+	url = https://github.com/boostorg/iterator
+[submodule "build/submodule/boost/mpl"]
+	path = build/submodule/boost/mpl
+	url = https://github.com/boostorg/mpl
+[submodule "submodule/boost/smart_ptr"]
+	path = submodule/boost/smart_ptr
+	url = https://github.com/boostorg/smart_ptr
+[submodule "submodule/boost/predef"]
+	path = submodule/boost/predef
+	url = https://github.com/boostorg/predef
+[submodule "submodule/googletest"]
+	path = submodule/googletest
+	url = https://github.com/google/googletest.git
