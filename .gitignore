@@ -1,3 +1,2 @@
 *.o
-european_option
-
+/build

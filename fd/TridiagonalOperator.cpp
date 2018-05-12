@@ -20,7 +20,7 @@ TridiagonalOperator::TridiagonalOperator(
     const double middleValue,
     const double lowerValue,
     const std::size_t rowLength,
-    const boost::shared_ptr<const BoundaryCondition>& boundaryCondition)
+    const std::shared_ptr<const BoundaryCondition>& boundaryCondition)
     :
     _upperDiagonal(rowLength, upperValue),
     _middleDiagonal(rowLength, middleValue),

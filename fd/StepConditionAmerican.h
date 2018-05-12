@@ -3,7 +3,7 @@
 #include "PayOff.h"
 #include "StepCondition.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class StepConditionAmerican 
     : public StepCondition
@@ -14,7 +14,7 @@ public:
      **************************************************************************/
     StepConditionAmerican(
         const boost::numeric::ublas::vector<double>& stocks,
-        const boost::shared_ptr<const PayOff>& payOff);
+        const std::shared_ptr<const PayOff>& payOff);
     virtual ~StepConditionAmerican();
 
     /**************************************************************************
@@ -24,6 +24,6 @@ public:
         boost::numeric::ublas::vector<double>& previousStep) const;
 private:
     const boost::numeric::ublas::vector<double> _stocks;
-    const boost::shared_ptr<const PayOff> _payOff;
+    const std::shared_ptr<const PayOff> _payOff;
 };
 

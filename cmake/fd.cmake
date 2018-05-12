@@ -1,0 +1,45 @@
+LIST (APPEND fd_SOURCES
+    fd/BoundaryCondition.cpp
+    fd/BoundaryConditionCall.cpp
+    fd/BoundaryConditionNeumann.cpp
+    fd/BoundaryConditionPut.cpp
+    fd/Calculator.cpp
+    fd/CalculatorCrankNicolson.cpp
+    fd/CalculatorExplicit.cpp
+    fd/CalculatorImplicit.cpp
+    fd/CrankNicolson.cpp
+    fd/ExplicitFiniteDifference.cpp
+    fd/FiniteDifference.cpp
+    fd/FiniteDifferenceScheme.cpp
+    fd/ImplicitFiniteDifference.cpp
+    fd/PayOff.cpp
+    fd/PayOffCall.cpp
+    fd/PayOffPut.cpp
+    fd/StepCondition.cpp
+    fd/StepConditionAmerican.cpp
+    fd/StepConditionNull.cpp
+    fd/TridiagonalOperator.cpp
+)
+LIST (APPEND fd_HEADERS
+    fd/BoundaryCondition.h
+    fd/BoundaryConditionCall.h
+    fd/BoundaryConditionNeumann.h
+    fd/BoundaryConditionPut.h
+    fd/Calculator.h
+    fd/CalculatorCrankNicolson.h
+    fd/CalculatorExplicit.h
+    fd/CalculatorImplicit.h
+    fd/CrankNicolson.h
+    fd/ExplicitFiniteDifference.h
+    fd/FiniteDifference.h
+    fd/FiniteDifferenceScheme.h
+    fd/ImplicitFiniteDifference.h
+    fd/PayOff.h
+    fd/PayOffCall.h
+    fd/PayOffPut.h
+    fd/StepCondition.h
+    fd/StepConditionAmerican.h
+    fd/StepConditionNull.h
+    fd/TridiagonalOperator.h
+    fd/utilities.h
+)

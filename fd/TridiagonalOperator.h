@@ -5,7 +5,7 @@ class BoundaryCondition;
 #include "BoundaryCondition.h"
 
 #include <boost/numeric/ublas/vector.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class TridiagonalOperator 
 {
@@ -22,7 +22,7 @@ public:
         const double middleValue,
         const double lowerValue,
         const std::size_t rowLength,
-        const boost::shared_ptr<const BoundaryCondition>& boundaryCondiion);
+        const std::shared_ptr<const BoundaryCondition>& boundaryCondiion);
     virtual ~TridiagonalOperator();
 
     /**************************************************************************

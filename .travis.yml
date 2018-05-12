@@ -1,0 +1,70 @@
+sudo: required
+dist: trusty
+language: cpp
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      env:
+        - BUILD_TYPE=Debug
+          FD_BUILD_TEST="-DFD_BUILD_TEST=ON"
+      addons:
+        apt:
+          sources:
+            # List of whitelisted in travis packages for ubuntu-precise can be found here:
+            #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
+            # List of whitelisted in travis apt-sources:
+            #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+            - ubuntu-toolchain-r-test
+          packages:
+            - libc6-i386
+            - libc6-dbg
+    - os: linux
+      compiler: clang++
+      env:
+        - BUILD_TYPE=Debug
+          FD_BUILD_TEST="-DFD_BUILD_TEST=ON"
+      addons:
+        apt:
+          sources:
+            # List of whitelisted in travis packages for ubuntu-precise can be found here:
+            #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
+            # List of whitelisted in travis apt-sources:
+            #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+            - ubuntu-toolchain-r-test
+          packages:
+            - libc6-i386
+            - libc6-dbg
+    - os: linux
+      compiler: clang++
+      env:
+        - BUILD_TYPE=Release
+          FD_BUILD_TEST="-DFD_BUILD_TEST=ON"
+      addons:
+        apt:
+          sources:
+            # List of whitelisted in travis packages for ubuntu-precise can be found here:
+            #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
+            # List of whitelisted in travis apt-sources:
+            #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+            - ubuntu-toolchain-r-test
+          packages:
+            - libc6-i386
+            - libc6-dbg
+    - os: osx
+      compiler: gcc
+      env:
+        - BUILD_TYPE=Debug
+          FD_BUILD_TEST="-DFD_BUILD_TEST=ON"
+    - os: osx
+      compiler: clang++
+      # addons:
+      env:
+        - BUILD_TYPE=Debug
+          FD_BUILD_TEST="-DFD_BUILD_TEST=ON"
+before_install:
+  - bash script/ci/before_install.sh
+install:
+  - bash script/ci/install.sh
+script:
+  - script/ci/build_with_cmake.sh

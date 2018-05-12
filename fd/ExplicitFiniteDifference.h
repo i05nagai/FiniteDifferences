@@ -1,22 +1,24 @@
 #pragma once
 
-#include "BoundaryCondition.h"
 #include "FiniteDifferenceScheme.h"
+#include "BoundaryCondition.h"
+#include "TridiagonalOperator.h"
+#include <memory>
 
-class ImplicitFiniteDifference 
+class ExplicitFiniteDifference 
     : public FiniteDifferenceScheme
 {
 public:
     /**************************************************************************
      * Constructers and Destructers.
      **************************************************************************/
-    ImplicitFiniteDifference(
+    ExplicitFiniteDifference(
         const double upperValue,
         const double middleValue,
         const double lowerValue,
         const std::size_t dimension,
-        const boost::shared_ptr<const BoundaryCondition>& boundaryCondition);
-    virtual ~ImplicitFiniteDifference();
+        const std::shared_ptr<const BoundaryCondition>& boundaryCondition);
+    virtual ~ExplicitFiniteDifference();
 
     /**************************************************************************
      * inherited pure virtual functions.
@@ -24,10 +26,13 @@ public:
     virtual void doBackward(
         boost::numeric::ublas::vector<double>& rightHandSide,
         boost::numeric::ublas::vector<double>& results) const;
-
 private:
-    const boost::shared_ptr<const BoundaryCondition> _boundaryCondition;
+    const double _upperValue;
+    const double _middleValue;
+    const double _lowerValue;
+    const std::shared_ptr<const BoundaryCondition> _boundaryCondition;
     const TridiagonalOperator _tridiagonalOperator;
+
             
 };
 

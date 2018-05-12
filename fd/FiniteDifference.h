@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "FiniteDifferenceScheme.h"
 #include "StepCondition.h"
 
@@ -19,8 +20,8 @@ public:
      * member functions.
      **************************************************************************/
     boost::numeric::ublas::vector<double> doScheme(
-        const boost::shared_ptr<const FiniteDifferenceScheme> scheme,
-        const boost::shared_ptr<const StepCondition> stepCondition,
+        const std::shared_ptr<const FiniteDifferenceScheme> scheme,
+        const std::shared_ptr<const StepCondition> stepCondition,
         boost::numeric::ublas::vector<double>& rightHandSide) const;
 
 private:

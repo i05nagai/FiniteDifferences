@@ -1,6 +1,6 @@
 #include "FiniteDifference.h"
 
-#include <boost/shared_ptr.hpp> 
+#include <memory>
 #include <boost/numeric/ublas/io.hpp>
 
 /******************************************************************************
@@ -21,8 +21,8 @@ FiniteDifference::~FiniteDifference()
 
 
 boost::numeric::ublas::vector<double> FiniteDifference::doScheme(
-    const boost::shared_ptr<const FiniteDifferenceScheme> scheme,
-    const boost::shared_ptr<const StepCondition> stepCondition,
+    const std::shared_ptr<const FiniteDifferenceScheme> scheme,
+    const std::shared_ptr<const StepCondition> stepCondition,
     boost::numeric::ublas::vector<double>& rightHandSide) const
 {
     boost::numeric::ublas::vector<double> results(rightHandSide.size(), 0.0);

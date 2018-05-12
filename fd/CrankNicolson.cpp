@@ -1,50 +1,55 @@
-#include "ExplicitFiniteDifference.h"
+#include "CrankNicolson.h"
 
 #include <boost/numeric/ublas/io.hpp>
 
 /******************************************************************************
  * Constructers and Destructers.
  ******************************************************************************/
-ExplicitFiniteDifference::ExplicitFiniteDifference(
+CrankNicolson::CrankNicolson(
     const double upperValue,
     const double middleValue,
     const double lowerValue,
     const std::size_t dimension,
-    const boost::shared_ptr<const BoundaryCondition>& boundaryCondition)
+    const std::shared_ptr<const BoundaryCondition>& boundaryCondition)
     :
     _upperValue(upperValue),
     _middleValue(middleValue),
     _lowerValue(lowerValue),
-    _boundaryCondition(boundaryCondition),
-    _tridiagonalOperator(0.0, 1.0, 0.0, dimension, boundaryCondition)
+    _boundaryCondtion(boundaryCondition),
+    _tridiagonalOperator(lowerValue, middleValue, upperValue, 
+        dimension, boundaryCondition)
 {
 }
 
-ExplicitFiniteDifference::~ExplicitFiniteDifference() 
+CrankNicolson::~CrankNicolson() 
 {
 }
 
 /******************************************************************************
  * inherited pure virtual functions.
  ******************************************************************************/
-void ExplicitFiniteDifference::doBackward(
+void CrankNicolson::doBackward(
     boost::numeric::ublas::vector<double>& rightHandSide,
     boost::numeric::ublas::vector<double>& results) const
 {
     boost::numeric::ublas::vector<double> workingCopy(rightHandSide);
 
-    //before solve
+    //berfore solve
     for (std::size_t rowIndex = 1; rowIndex < rightHandSide.size() - 1; ++rowIndex) {
-        rightHandSide[rowIndex] = workingCopy[rowIndex + 1] * _lowerValue 
-            + workingCopy[rowIndex] * _middleValue 
-            + workingCopy[rowIndex - 1] * _upperValue;
+        rightHandSide[rowIndex] = 
+            - workingCopy[rowIndex + 1] * _lowerValue 
+            - workingCopy[rowIndex] * (_middleValue - 2.0)
+            - workingCopy[rowIndex - 1] * _upperValue;
     }
-    const double lastIndex = rightHandSide.size() - 1;
-    rightHandSide[lastIndex] = _boundaryCondition->upperCondition(rightHandSide);
-    rightHandSide[0] = _boundaryCondition->lowerCondition(rightHandSide);
+    const std::size_t lastIndex = workingCopy.size() - 1;
+    rightHandSide[lastIndex] = _boundaryCondtion->upperCondition(rightHandSide);
+    rightHandSide[0] = _boundaryCondtion->lowerCondition(rightHandSide);
+    std::cout << "afterBdd:" << rightHandSide << std::endl;
+    
 
     //solve
     _tridiagonalOperator.solve(rightHandSide, results);
 
+    //after solve
 }
 

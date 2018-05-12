@@ -5,7 +5,7 @@
  ******************************************************************************/
 StepConditionAmerican::StepConditionAmerican(
     const boost::numeric::ublas::vector<double>& stocks,
-    const boost::shared_ptr<const PayOff>& payOff)
+    const std::shared_ptr<const PayOff>& payOff)
     :
     _stocks(stocks),
     _payOff(payOff)

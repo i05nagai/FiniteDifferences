@@ -10,7 +10,7 @@ ImplicitFiniteDifference::ImplicitFiniteDifference(
     const double middleValue,
     const double lowerValue,
     const std::size_t dimension,
-    const boost::shared_ptr<const BoundaryCondition>& boundaryCondition)
+    const std::shared_ptr<const BoundaryCondition>& boundaryCondition)
     :
     _boundaryCondition(boundaryCondition),
     _tridiagonalOperator(upperValue, middleValue, lowerValue, 

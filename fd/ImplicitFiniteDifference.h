@@ -1,36 +1,34 @@
 #pragma once
 
-#include "FiniteDifferenceScheme.h"
 #include "BoundaryCondition.h"
-#include "TridiagonalOperator.h"
+#include "FiniteDifferenceScheme.h"
+#include <memory>
 
-#include <boost/shared_ptr.hpp>
-
-class CrankNicolson 
+class ImplicitFiniteDifference 
     : public FiniteDifferenceScheme
 {
 public:
     /**************************************************************************
      * Constructers and Destructers.
      **************************************************************************/
-    CrankNicolson(
+    ImplicitFiniteDifference(
         const double upperValue,
         const double middleValue,
         const double lowerValue,
         const std::size_t dimension,
-        const boost::shared_ptr<const BoundaryCondition>& boundaryCondition);
-    virtual ~CrankNicolson();
+        const std::shared_ptr<const BoundaryCondition>& boundaryCondition);
+    virtual ~ImplicitFiniteDifference();
 
+    /**************************************************************************
+     * inherited pure virtual functions.
+     **************************************************************************/
     virtual void doBackward(
         boost::numeric::ublas::vector<double>& rightHandSide,
         boost::numeric::ublas::vector<double>& results) const;
 
 private:
-    const double _upperValue;
-    const double _middleValue;
-    const double _lowerValue;
-    const boost::shared_ptr<const BoundaryCondition> _boundaryCondtion;
-    const TridiagonalOperator _tridiagonalOperator; 
+    const std::shared_ptr<const BoundaryCondition> _boundaryCondition;
+    const TridiagonalOperator _tridiagonalOperator;
             
 };
 

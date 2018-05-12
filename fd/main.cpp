@@ -12,7 +12,7 @@
 #include "StepConditionNull.h"
 #include "StepConditionAmerican.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <iostream>
@@ -33,7 +33,7 @@ void initializeStocks(
 void initializeRightHandSide(
     boost::numeric::ublas::vector<double>& rightHandSide,
     const boost::numeric::ublas::vector<double>& stocks,
-    const boost::shared_ptr<const PayOff>& payOff)
+    const std::shared_ptr<const PayOff>& payOff)
 {
     for (std::size_t rowIndex = 0; rowIndex < rightHandSide.size(); ++rowIndex) {
         rightHandSide[rowIndex] = payOff->operator()(stocks[rowIndex]);
@@ -70,23 +70,23 @@ int main(int argc, char const* argv[])
         const double lowerValue = calculator.calculateLowerValue();
 
         //payoff
-        const boost::shared_ptr<const PayOff> payOff(new PayOffCall(strike));
+        const std::shared_ptr<const PayOff> payOff(new PayOffCall(strike));
 
         //initial value
         boost::numeric::ublas::vector<double> rightHandSide(gridSize);
         initializeRightHandSide(rightHandSide, stocks, payOff);
 
         //boundary condition
-       const boost::shared_ptr<const BoundaryCondition> boundaryConditionCall(
+       const std::shared_ptr<const BoundaryCondition> boundaryConditionCall(
            new BoundaryConditionCall(stocks));
 
        //Finite difference scheme
-       const boost::shared_ptr<const FiniteDifferenceScheme> scheme(
+       const std::shared_ptr<const FiniteDifferenceScheme> scheme(
            new ExplicitFiniteDifference(upperValue, middleValue, lowerValue,
                 gridSize, boundaryConditionCall));
 
        //step condition
-       const boost::shared_ptr<const StepCondition> stepCondition(
+       const std::shared_ptr<const StepCondition> stepCondition(
            new StepConditionNull());
 
        //making finite difference
@@ -125,23 +125,23 @@ int main(int argc, char const* argv[])
         const double lowerValue = calculator.calculateLowerValue();
 
         //payoff
-        const boost::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
+        const std::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
 
         //initial value
         boost::numeric::ublas::vector<double> rightHandSide(gridSize);
         initializeRightHandSide(rightHandSide, stocks, payOff);
 
         //boundary condition
-       const boost::shared_ptr<const BoundaryCondition> boundaryCondition(
+       const std::shared_ptr<const BoundaryCondition> boundaryCondition(
            new BoundaryConditionPut(stocks));
 
        //Finite difference scheme
-       const boost::shared_ptr<const FiniteDifferenceScheme> scheme(
+       const std::shared_ptr<const FiniteDifferenceScheme> scheme(
            new ExplicitFiniteDifference(upperValue, middleValue, lowerValue,
                 gridSize, boundaryCondition));
 
        //step condition
-       const boost::shared_ptr<const StepCondition> stepCondition(
+       const std::shared_ptr<const StepCondition> stepCondition(
            new StepConditionAmerican(stocks, payOff));
 
        //making finite difference
@@ -182,23 +182,23 @@ int main(int argc, char const* argv[])
         const double lowerValue = calculator.calculateLowerValue();
 
         //payoff
-        const boost::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
+        const std::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
 
         //initial value
         boost::numeric::ublas::vector<double> rightHandSide(gridSize);
         initializeRightHandSide(rightHandSide, stocks, payOff);
 
         //boundary condition
-       const boost::shared_ptr<const BoundaryCondition> boundaryCondition(
+       const std::shared_ptr<const BoundaryCondition> boundaryCondition(
            new BoundaryConditionPut(stocks));
 
        //Finite difference scheme
-       const boost::shared_ptr<const FiniteDifferenceScheme> scheme(
+       const std::shared_ptr<const FiniteDifferenceScheme> scheme(
            new ImplicitFiniteDifference(upperValue, middleValue, lowerValue,
                 gridSize, boundaryCondition));
 
        //step condition
-       const boost::shared_ptr<const StepCondition> stepCondition(
+       const std::shared_ptr<const StepCondition> stepCondition(
            new StepConditionAmerican(stocks, payOff));
 
        //making finite difference
@@ -243,23 +243,23 @@ int main(int argc, char const* argv[])
 
 
         //payoff
-        const boost::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
+        const std::shared_ptr<const PayOff> payOff(new PayOffPut(strike));
 
         //initial value
         boost::numeric::ublas::vector<double> rightHandSide(gridSize);
         initializeRightHandSide(rightHandSide, stocks, payOff);
 
         //boundary condition
-       const boost::shared_ptr<const BoundaryCondition> boundaryCondition(
+       const std::shared_ptr<const BoundaryCondition> boundaryCondition(
            new BoundaryConditionPut(stocks));
 
        //Finite difference scheme
-       const boost::shared_ptr<const FiniteDifferenceScheme> scheme(
+       const std::shared_ptr<const FiniteDifferenceScheme> scheme(
            new CrankNicolson(upperValue, middleValue, lowerValue,
                 gridSize, boundaryCondition));
 
        //step condition
-       const boost::shared_ptr<const StepCondition> stepCondition(
+       const std::shared_ptr<const StepCondition> stepCondition(
            new StepConditionAmerican(stocks, payOff));
 
        //making finite difference
